@@ -1,0 +1,15 @@
+{
+  "name": "gestor-de-pensum-usac-ingenieria-en-ciencias-y-sistemas",
+  "version": "1.0.0",
+  "description": "",
+  "main": "lector.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "xlsx": "^0.18.5"
+  }
+}
