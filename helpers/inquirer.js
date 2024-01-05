@@ -7,32 +7,12 @@ const menuQuestions = [
         message: '¿Que desea hacer?',
         choices: [
             {
-                value: '1',
-                name: '1.'.yellow+' Crear Tarea'
+                value: 1,
+                name: '1.'.yellow+' Últimos Cursos Aprobados'
             },
             {
-                value: '2',
-                name: '2.'.yellow+' Listar Tareas'
-            },
-            {
-                value: '3',
-                name: '3.'.yellow+' Listar Tareas Completadas'
-            },
-            {
-                value: '4',
-                name: '4.'.yellow+' Listar Tareas Pendientes'
-            },
-            {
-                value: '5',
-                name: '5.'.yellow+' Completar Tarea(s)'
-            },
-            {
-                value: '6',
-                name: '6.'.yellow+' Borrar Tarea'
-            },
-            {
-                value: '7',
-                name: '7.'.yellow+' Salir'
+                value: 0,
+                name: '0.'.yellow+' Salir'
             }
         ]
     }
