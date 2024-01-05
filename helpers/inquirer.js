@@ -11,6 +11,18 @@ const menuQuestions = [
                 name: '1.'.yellow+' Últimos Cursos Aprobados'
             },
             {
+                value: 2,
+                name: '2.'.yellow+' Listar Cursos Desbloqueados Necesarios'
+            },
+            {
+                value: 3,
+                name: '3.'.yellow+' Listar Cursos Pendientes'
+            },
+            {
+                value: 4,
+                name: '4.'.yellow+' Listar Cursos Pendientes Obligatorios'
+            },
+            {
                 value: 0,
                 name: '0.'.yellow+' Salir'
             }

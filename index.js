@@ -22,6 +22,15 @@ const main = async() => {
                 cursos.listarCursosAprobados();
                 break;
             
+            case 2: //Listar Cursos Desbloqueados
+                cursos.listarCursosDesbloqueados();
+            break;
+            case 3: //Listar Cursos Desbloqueados
+                cursos.listarCursosPendientes();
+            break;
+            case 4: //Listar Cursos Desbloqueados
+                cursos.listarCursosPendientesObligatorios();
+            break;
             default:
                 /*for (let index = 0; index < 10; index++) {
                     //const element = array[index];
