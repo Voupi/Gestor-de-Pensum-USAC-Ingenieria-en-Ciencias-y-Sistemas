@@ -23,6 +23,14 @@ const menuQuestions = [
                 name: '4.'.yellow+' Listar Cursos Pendientes Obligatorios'
             },
             {
+                value: 5,
+                name: '5.'.yellow+' Listar los cursos a sacar en toda la carrera por semestre'
+            },
+            {
+                value: 6,
+                name: '6.'.yellow+' Recorrer en el tiempo'
+            },
+            {
                 value: 0,
                 name: '0.'.yellow+' Salir'
             }
@@ -92,25 +100,25 @@ const listadoTareasBorrar = async(tareas = []) => {
     return id;
 }
 
-const listadoTareasCompletar = async(tareas = []) => {
-    const choices = tareas.map((tarea, i) => {
+const listadoTareasCompletar = async(cursos = []) => {
+    const choices = cursos.map((curso, i) => {
         const idx = `${(i+1)}`.green;
         return {
-            value: tarea.id,
-            name: `${idx} ${tarea.descripcion}`,
-            checked: (tarea.completadoEn) ? true : false
+            value: curso.index,
+            name: `${idx} ${curso.Nombre_Curso}`,
+            checked: (curso.Estado_del_Curso) ? true : false
         }
     })
     const question = [
         {
             type: 'checkbox',
-            name: 'ids',
+            name: 'index',
             message: 'Seleccione',
             choices
         }
     ]
-    const {ids} = await inquirer.prompt(question);
-    return ids;
+    const {index} = await inquirer.prompt(question);
+    return index;
 }
 
 const confirmarAccion = async(message) => {

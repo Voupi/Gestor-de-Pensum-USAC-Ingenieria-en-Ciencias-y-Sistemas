@@ -5,55 +5,93 @@ class Cursos{
     _cursosPendientes = []
     _cursosDesbloqueados = []
     cargarArchivo(data = []) {
-            this._pensum = data
-            this._pensum.forEach(curso => {
-                if (curso.Estado_del_Curso == 'Aprobado') {
-                    this._cursosAprobados.push(curso)
-                    this._creditos += curso.Creditos;
-                }
-                else{
-                    this._cursosPendientes.push(curso)
-                }
-            })
-
-            this._cursosPendientes.forEach(cursoPendiente => {
-                if (cursoPendiente.CreditosMinimos < this._creditos) {//Mira que se cumpla con los créditos
-                    //console.log(JSON.stringify(cursoPendiente))
-                    //const cadenaPrerequisito = JSON.stringify(cursoPendiente.Prerequisito)
-                    const cadenaPrerequisito = cursoPendiente.Prerequisito;
-                    if (!cadenaPrerequisito) {
-                        this._cursosDesbloqueados.push(cursoPendiente)
+        this._pensum = data
+        let countCurso = 0
+        this._pensum.forEach(curso => {
+            if (curso.Estado_del_Curso == 'Aprobado') {
+                this._cursosAprobados.push(curso)
+                this._creditos += curso.Creditos;
+            }
+            else{
+                this._cursosPendientes.push(curso)
+                curso.Estado_del_Curso = 'Pendiente'
+            }
+            curso.index = countCurso;
+            countCurso ++;
+            const cadenaPrerequisito = curso.Prerequisito;//Convierte el text a un array de codigos
+            let listPrerequisito = []
+            if (cadenaPrerequisito) { //Si no hay nada en la cadenaprerequisito, entonces no se ejecuta
+                let codigotemp=""
+                for (let index = 0; index < cadenaPrerequisito.length; index++) {
+                    if (cadenaPrerequisito[index]==",") {
+                        listPrerequisito.push(codigotemp)
+                        codigotemp = ""
                     }
                     else {
-                        //console.log(cadenaPrerequisito + "Es la cadena cadenaPrerequisitol Prerequisito");
-                        //let listPrerequisito = cadenaPrerequisito.split(',');
-                        let listPrerequisito = []
-                        let codigotemp=""
-                        for (let index = 0; index < cadenaPrerequisito.length; index++) {
-                            if (cadenaPrerequisito[index]==",") {
-                                listPrerequisito.push(codigotemp)
-                                codigotemp = ""
-                            }
-                            else {
-                                codigotemp+=cadenaPrerequisito[index];
-                            }
-                        }
-                        listPrerequisito.push(codigotemp)
-                        //console.log(listPrerequisito + "Es el array del prerequisito")
-                        if (this.validarPrerequisitos(listPrerequisito) && listPrerequisito.length != 0) {
-                            this._cursosDesbloqueados.push(cursoPendiente)
-                        }
+                        codigotemp+=cadenaPrerequisito[index];
                     }
                 }
-            })
+                listPrerequisito.push(codigotemp) //Añade lo que encontró después de la última ','
+            }
+            curso.Prerequisito = listPrerequisito; //Ya guarda convertido el array
+        })
+        this.calcularCursosDesbloqueados();
+    }
+    calcularCursosDesbloqueados(){
+        this._cursosPendientes.forEach(cursoPendiente => {
+            if (cursoPendiente.CreditosMinimos < this._creditos) {//Mira que se cumpla con los créditos
+                const cadenaPrerequisito = cursoPendiente.Prerequisito;
+                if (!cadenaPrerequisito) {    //Añade directamente al lista de desbloqueados si no tiene ningún prerequisito
+                    this._cursosDesbloqueados.push(cursoPendiente)
+                    this._pensum[cursoPendiente.index].Estado_del_Curso = 'Desbloqueado';
+                }
+                else {
+                    if (this.validarPrerequisitos(cursoPendiente.Prerequisito) && cursoPendiente.Prerequisito.length != 0) {
+                        this._cursosDesbloqueados.push(cursoPendiente);
+                        this._pensum[cursoPendiente.index].Estado_del_Curso = 'Desbloqueado';
+                    }
+                }
+            }
+        })
+
+    }
+    aprobarCursosPendientes(codigosCursos = []){
+        codigosCursos.forEach(codigo => {
+            this._pensum[codigo].Estado_del_Curso = 'Aprobado';
+            this._creditos+=this._pensum[codigo].Creditos;
+            //this.consologCurso(this._pensum[codigo])
+        })
+        this.actualizarEstadosCursos(); //Actualiza los ultimos cambios en todos los arrays
+        this.calcularCursosDesbloqueados();
+    }
+    actualizarEstadosCursos(){
+        this._cursosAprobados = []
+        this._cursosPendientes = []
+        this._cursosDesbloqueados = []
+        this._pensum.forEach(curso => {
+            if (curso.Estado_del_Curso == 'Aprobado'){
+                this._cursosAprobados.push(curso);
+            }
+            else if (curso.Estado_del_Curso == 'Pendiente'){
+                this._cursosPendientes.push(curso);
+            }
+            else if (curso.Estado_del_Curso == 'Desbloqueado'){
+                this._cursosDesbloqueados.push(curso);
+            }
+        })
     }
     listarCursosPendientesObligatorios(){
         console.log('Listado de Cursos Pendientes Necesarios')
+        let tempCreditos = 0
+        let countCursos = 0
         this._cursosPendientes.forEach(curso => {
             if (curso.Obligatorio == "*") {
                 this.consologCurso(curso)
+                tempCreditos += curso.Creditos;
+                countCursos++;
             }    
-            })
+        })
+        console.log(`Total de cursos pendientes ${countCursos}, créditos a obtener: ${tempCreditos}`)
     }
     listarCursosPendientes(){//Lista los curso que debe cursar, solo obligatorios
         console.log('Listado de Cursos Pendientes')
@@ -84,15 +122,6 @@ class Cursos{
             }
         }
         return true
-        /*
-        listPrerequisito.forEach(codigoPrerequisito =>{
-            if (!this.encontrarCursoAprobado(codigoPrerequisito)) {
-                encontrado = false; //Retorna si no encuentra el curso
-                break etiquetaForEach;
-            }
-        })
-        return encontrado; //Si encontró que todos los prerequisitos están, entonces el curso está desbloqueado
-        */
     }
     encontrarCursoAprobado(codigoCurso = 0){
         for (let i = 0; i < this._cursosAprobados.length; i++) {
@@ -100,15 +129,7 @@ class Cursos{
                 return true;
             }
         }
-        return false //Si no encontró nada lo retorna
-        /*let encontrado = false;
-        this._cursosAprobados.forEach(curso => {
-            if (curso.Codigo_Curso == codigoCurso) {
-                encontrado = true
-                return
-            }
-        })
-        return encontrado;*/
+        return false
     }
     consologCurso(curso = {}){
         console.log(`${curso.Codigo_Curso}  ${curso.Nombre_Curso}`)

@@ -1,10 +1,7 @@
 const XLSX = require('xlsx');
 const path = require('path');
 const leerExcel = ()  =>{
-
     // Ruta al archivo Excel
-    //const filePath = path.join(__dirname, '');
-    //console.log(__dirname + "Este es el name")
     const filePath = path.join(__dirname,'../files/Pensum Ingenieria Usac.xlsx');
     const workbook = XLSX.readFile(filePath); // Carga el libro de Excel
     
