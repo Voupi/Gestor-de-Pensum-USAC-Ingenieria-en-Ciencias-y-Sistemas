@@ -1,19 +1,20 @@
 class Cursos{
     _pensum = [];
     _creditos = 0;
-    _cursosAprobados = []
-    _cursosPendientes = []
-    _cursosDesbloqueados = []
+    _cursosAprobados = [];
+    _cursosPendientes = [];
+    _cursosDesbloqueados = [];
+    encabezados = ["Codigo_Curso","Nombre_Curso"];
     cargarArchivo(data = []) {
-        this._pensum = data
-        let countCurso = 0
+        this._pensum = data;
+        let countCurso = 0;
         this._pensum.forEach(curso => {
             if (curso.Estado_del_Curso == 'Aprobado') {
-                this._cursosAprobados.push(curso)
+                this._cursosAprobados.push(curso);
                 this._creditos += curso.Creditos;
             }
             else{
-                this._cursosPendientes.push(curso)
+                this._cursosPendientes.push(curso);
                 curso.Estado_del_Curso = 'Pendiente'
             }
             curso.index = countCurso;
@@ -33,7 +34,7 @@ class Cursos{
                 }
                 listPrerequisito.push(codigotemp) //Añade lo que encontró después de la última ','
             }
-            curso.Prerequisito = listPrerequisito; //Ya guarda convertido el array
+            curso.Prerequisito = listPrerequisito; //Ya guarda convertido el array y si hay nada en el array, lo guarda vacío
         })
         this.calcularCursosDesbloqueados();
     }
@@ -59,7 +60,6 @@ class Cursos{
         codigosCursos.forEach(codigo => {
             this._pensum[codigo].Estado_del_Curso = 'Aprobado';
             this._creditos+=this._pensum[codigo].Creditos;
-            //this.consologCurso(this._pensum[codigo])
         })
         this.actualizarEstadosCursos(); //Actualiza los ultimos cambios en todos los arrays
         this.calcularCursosDesbloqueados();
@@ -82,40 +82,39 @@ class Cursos{
     }
     listarCursosPendientesObligatorios(){
         console.log('Listado de Cursos Pendientes Necesarios')
+        let tempCursos = []
         let tempCreditos = 0
         let countCursos = 0
         this._cursosPendientes.forEach(curso => {
             if (curso.Obligatorio == "*") {
-                this.consologCurso(curso)
+                tempCursos.push(curso)
                 tempCreditos += curso.Creditos;
                 countCursos++;
             }    
         })
+        console.table(tempCursos, this.encabezados)
         console.log(`Total de cursos pendientes ${countCursos}, créditos a obtener: ${tempCreditos}`)
     }
     listarCursosPendientes(){//Lista los curso que debe cursar, solo obligatorios
         console.log('Listado de Cursos Pendientes')
-        this._cursosPendientes.forEach(curso => {
-                this.consologCurso(curso)
-            })
+        console.table(this._cursosPendientes, this.encabezados)
     }
     listarCursosAprobados(){
         console.log('Listado de Cursos Aprobados')
-        this._cursosAprobados.forEach(curso => {
-                this.consologCurso(curso)
-            })
+        console.table(this._cursosAprobados,this.encabezados)
         console.log('Créditos Obtenidos = '+this._creditos)
     }
     listarCursosDesbloqueados(){//Lista los curso que debe cursar, solo obligatorios
         console.log('Listado de Cursos Desbloqueados Obligatorios')
+        let tempCursos = []
         this._cursosDesbloqueados.forEach(curso => {
                 if (curso.Obligatorio == "*") {
-                    this.consologCurso(curso)
+                    tempCursos.push(curso)
                 }
-            })
+        })
+        console.table(tempCursos, this.encabezados)
     }
     validarPrerequisitos (listPrerequisito = []){
-        //let encontrado = true
         for (let i = 0; i < listPrerequisito.length; i++) {
             if (!this.encontrarCursoAprobado(listPrerequisito[i])) {//Es para que si encuentra uno que un curso que no esté aprobado returno que el curso no puede ser desbloqueado
                 return false; //Retorna si no encuentra el curso
@@ -130,9 +129,6 @@ class Cursos{
             }
         }
         return false
-    }
-    consologCurso(curso = {}){
-        console.log(`${curso.Codigo_Curso}  ${curso.Nombre_Curso}`)
     }
 }
 module.exports = Cursos;

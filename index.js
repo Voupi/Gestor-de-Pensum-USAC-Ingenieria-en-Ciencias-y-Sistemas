@@ -9,7 +9,6 @@ const { inquirerMenu,
 } = require('./helpers/inquirer');
 
 const Cursos = require('./models/cursos');
-const { down } = require('inquirer/lib/utils/readline');
 
 const main = async() => {
     let Option = 0;
@@ -21,18 +20,17 @@ const main = async() => {
             case 0:break;
             case 1: //Listar Cursos Aprobados
                 cursos.listarCursosAprobados();
-                break;
-            
+            break;
             case 2: //Listar Cursos Desbloqueados
                 cursos.listarCursosDesbloqueados();
             break;
-            case 3: //Listar Cursos Desbloqueados
+            case 3: //Listar Cursos Pendientes
                 cursos.listarCursosPendientes();
             break;
             case 4: //Listar Cursos Desbloqueados
                 cursos.listarCursosPendientesObligatorios();
             break;
-            case 5: //Listar Cursos Desbloqueados
+            case 5: //Aprobar Cursos Desbloqueados
                 let tempCursosDesbloqueadosObligatorios = []
                 cursos._cursosDesbloqueados.forEach( curso => {
                     if (curso.Obligatorio == "*") {
@@ -40,7 +38,6 @@ const main = async() => {
                     }
                 })
                 const codigosCursos = await listadoTareasCompletar(tempCursosDesbloqueadosObligatorios)
-                console.log(codigosCursos)
                 cursos.aprobarCursosPendientes(codigosCursos);
             break;
             case 6: //Hacer una linea del tiempo de cursos por periodo de tiempo
@@ -49,25 +46,23 @@ const main = async() => {
                 do {
                     indexCursos = [];
                     countCursos = 0;
-                    //console.log(indexCursos.length + 'Tamaño del array')
-                    console.log('\n Periodo de Tiempo número: '+countPeriodo +'\n')
-                    cursos.listarCursosDesbloqueados();
                     cursos._cursosDesbloqueados.forEach( curso => {
                         if (curso.Obligatorio == "*") {
                             indexCursos.push(curso.index);
-                            countCursos++
+                            countCursos++;
                         }
                     })
-                    console.log('\n Total de Cursos: '+countCursos)
-                    cursos.aprobarCursosPendientes(indexCursos);
-                    countPeriodo++
-                } while (indexCursos.length != 0 && countPeriodo < 15);
+                    if (indexCursos.length != 0) {
+                        console.log('\n Periodo de Tiempo número: '+countPeriodo +'')
+                        console.log(' Total de Cursos: '+countCursos)
+                        cursos.listarCursosDesbloqueados();
+                        cursos.aprobarCursosPendientes(indexCursos);
+                        console.log('_________________________________________________\n')    
+                    }
+                    countPeriodo++;
+                } while (indexCursos.length != 0);
                 break;
             default:
-                /*for (let index = 0; index < 10; index++) {
-                    //const element = array[index];
-                    console.log(cursos._pensum[index])
-                }*/
                 break;
         }
         await Confirmacion();

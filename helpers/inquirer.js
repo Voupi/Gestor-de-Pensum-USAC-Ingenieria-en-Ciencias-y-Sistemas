@@ -46,7 +46,7 @@ const pausa = [
 ]
 
 const inquirerMenu = async() => {
-    //console.clear();
+    console.clear();
     console.log('======================='.green);
     console.log('Seleccione un opción'.white);
     console.log('=======================\n'.green);
