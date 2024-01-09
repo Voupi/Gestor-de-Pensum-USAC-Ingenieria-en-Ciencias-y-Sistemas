@@ -4,7 +4,7 @@ class Cursos{
     _cursosAprobados = [];
     _cursosPendientes = [];
     _cursosDesbloqueados = [];
-    encabezados = ["Codigo_Curso","Nombre_Curso"];
+    encabezados = ["Codigo_Curso","Nombre_Curso", "Prerequisito"];
     cargarArchivo(data = []) {
         this._pensum = data;
         let countCurso = 0;
@@ -56,10 +56,10 @@ class Cursos{
         })
 
     }
-    aprobarCursosPendientes(codigosCursos = []){
-        codigosCursos.forEach(codigo => {
-            this._pensum[codigo].Estado_del_Curso = 'Aprobado';
-            this._creditos+=this._pensum[codigo].Creditos;
+    aprobarCursosPendientes(indexCursos = []){
+        indexCursos.forEach(index => {
+            this._pensum[index].Estado_del_Curso = 'Aprobado';
+            this._creditos+=this._pensum[index].Creditos;
         })
         this.actualizarEstadosCursos(); //Actualiza los ultimos cambios en todos los arrays
         this.calcularCursosDesbloqueados();
