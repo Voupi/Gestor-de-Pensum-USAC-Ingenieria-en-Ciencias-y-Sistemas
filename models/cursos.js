@@ -80,6 +80,26 @@ class Cursos{
             }
         })
     }
+    ramaCurso(codigoCurso = '0'){
+        let cursosTempDesbloc = [];
+        let nameCurso = "";
+        let semestre = "";
+        this._cursosPendientes.forEach(curso => {
+            if (curso.Prerequisito.includes(codigoCurso) && curso.Obligatorio == "*") {
+                cursosTempDesbloc.push(curso);
+            }
+            if (curso.Codigo_Curso == parseInt(codigoCurso)) {
+                nameCurso = curso.Nombre_Curso;
+                semestre = curso.Semestre;
+            }
+        })
+        if (cursosTempDesbloc.length == 0) {
+            console.log ('Este curso no desbloquea nada importante')
+        } else {
+            console.log( `Importancia en los siguientes cursos de: \n    ${nameCurso} \n    ${semestre} `)
+            console.table(cursosTempDesbloc, ["Codigo_Curso","Nombre_Curso", "Semestre"]);
+        }
+    }
     listarCursosPendientesObligatorios(){
         console.log('Listado de Cursos Pendientes Necesarios')
         let tempCursos = []

@@ -31,6 +31,10 @@ const menuQuestions = [
                 name: '6.'.yellow+' Recorrer en el tiempo'
             },
             {
+                value: 7,
+                name: '7.'.yellow+' Ver lo que desbloquea un curso'
+            },
+            {
                 value: 0,
                 name: '0.'.yellow+' Salir'
             }
@@ -63,7 +67,7 @@ const leerInput = async (message) => {
     const question = [
         {
             type: 'input',
-            name: 'descripcion',
+            name: 'codigoCurso',
             message,
             validate (value){
                 if (value.length === 0){
@@ -73,8 +77,8 @@ const leerInput = async (message) => {
             }
         }
     ]
-    const {descripcion}  = await inquirer.prompt(question);
-    return descripcion;
+    const {codigoCurso}  = await inquirer.prompt(question);
+    return codigoCurso;
 }
 const listadoTareasBorrar = async(tareas = []) => {
     const choices = tareas.map((tarea, i) => {

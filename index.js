@@ -76,7 +76,12 @@ const main = async () => {
                     countPeriodo++;
                 } while (indexCursos.length != 0);
                 break;
-            default:
+            
+            case 7: //Ver lo que desbloquea de un curso
+                const codigoCurso = await leerInput("Ingrese el códido del curso a evaluar");
+                cursos.ramaCurso(codigoCurso);
+            break;
+                default:
                 break;
         }
         await Confirmacion();
